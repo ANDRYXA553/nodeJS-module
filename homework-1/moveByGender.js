@@ -7,6 +7,9 @@ const dir20Path = path.join(__dirname, 'dec-2020', '20-00')
 const boysPath = path.join(__dirname, 'dec-2020', 'boys')
 const girlsPAth = path.join(__dirname, 'dec-2020', 'girls')
 
+fs.mkdir(boysPath, (err => {}))
+fs.mkdir(girlsPAth, (err => {}))
+
 function moveByGender() {
 
   fs.readdir(dir18Path, (err, files) => {
