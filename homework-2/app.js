@@ -25,19 +25,6 @@ app.get('/', ((req, res) => {
     res.render('home');
 }));
 
-// USERS =======================
-app.get('/users', (req, res) => {
-    const users = getUsers();
-    res.render('users', {users});
-});
-
-app.get('/users/:userId', (req, res) => {
-    const users = getUsers();
-    const user = users.some(user => user.id === req.params.userId);
-
-    res.render('user', {user});
-});
-
 //REGISTRATION =======================
 app.get('/registration', (req, res) => {
     res.render('registration');
@@ -67,7 +54,7 @@ app.post('/registration', (req, res) => {
     users.push({id: Date.now(), username, password});
     fs.writeFile(usersPath, JSON.stringify(users), err => console.log(err));
 
-    const user = users.some(user => (user.username === username) && (user.password = password));
+    const user = users.find(user => (user.username === username) && (user.password = password));
     res.redirect(`/users/${user.id}`);
 });
 
@@ -79,9 +66,6 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
     const users = getUsers();
     const {username, password} = req.body;
-
-    console.log(users)
-    console.log(username)
 
     if (!username || !password) {
         res.render('error', {
@@ -98,7 +82,6 @@ app.post('/login', (req, res) => {
             backUrl: '/registration',
             text: 'Зареєструватись'
         });
-        console.log('PROVERKA')
         return;
     }
     if (users.some((user => user.username === username && user.password !== password))) {
@@ -110,9 +93,22 @@ app.post('/login', (req, res) => {
         return;
     }
 
-    const user = users.some(user => (user.username === username) && (user.password = password));
+    const user = users.find(user => (user.username === username) && (user.password = password));
     res.redirect(`/users/${user.id}`);
 })
+
+// USERS =======================
+app.get('/users', (req, res) => {
+    const users = getUsers();
+    res.render('users', {users});
+});
+
+app.get('/users/:userId', (req, res) => {
+    const users = getUsers();
+    const user = users.find(user => user.id === +req.params.userId);
+
+    res.render('user', {user});
+});
 
 app.listen(3000, () => {
     console.log('App listen 3000');
