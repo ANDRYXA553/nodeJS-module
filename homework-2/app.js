@@ -51,11 +51,12 @@ app.post('/registration', (req, res) => {
         return;
     }
 
-    users.push({id: Date.now(), username, password});
+    const id = Date.now();
+
+    users.push({id, username, password});
     fs.writeFile(usersPath, JSON.stringify(users), err => console.log(err));
 
-    const user = users.find(user => (user.username === username) && (user.password = password));
-    res.redirect(`/users/${user.id}`);
+    res.redirect(`/users/${id}`);
 });
 
 // LOGIN =======================
@@ -93,7 +94,7 @@ app.post('/login', (req, res) => {
         return;
     }
 
-    const user = users.find(user => (user.username === username) && (user.password = password));
+    const user = users.find(user => (user.username === username) && (user.password === password));
     res.redirect(`/users/${user.id}`);
 })
 
