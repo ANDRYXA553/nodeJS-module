@@ -30,23 +30,25 @@ app.get('/registration', (req, res) => {
     res.render('registration');
 });
 
-app.post('/registration', (req, res) => {
+app.post('/users', (req, res) => {
     const users = getUsers();
     const {username, password} = req.body;
 
+    const isUserAlreadyExist = users.some((user => user.username === username));
+
     if (!username || !password) {
         res.render('error', {
-            error: 'Введіть логін та пароль',
-            backUrl: '/registration',
-            text: 'Назад до реєстрації'
+            error: 'Enter login and password',
+            backUrl: '/users',
+            text: 'Back to registration'
         });
         return;
     }
-    if (users.some((user => user.username === username))) {
+    if (isUserAlreadyExist) {
         res.render('error', {
-            error: 'Користувач з таким імям уже існує',
-            backUrl: '/registration',
-            text: 'Назад до реєстрації'
+            error: 'User with this name already exists',
+            backUrl: '/users',
+            text: 'Back to registration'
         });
         return;
     }
@@ -68,28 +70,31 @@ app.post('/login', (req, res) => {
     const users = getUsers();
     const {username, password} = req.body;
 
+    const isUserExist = !(users.some(user => username === user.username));
+    const isUserPasswordRight = users.some((user => user.username === username && user.password !== password));
+
     if (!username || !password) {
         res.render('error', {
-            error: 'Введіть логін та пароль',
+            error: 'Enter your login and password',
             backUrl: '/login',
-            text: 'Назад'
+            text: 'Back'
         });
         return;
     }
 
-    if (!(users.some(user => username === user.username))) {
+    if (isUserExist) {
         res.render('error', {
-            error: 'Користувача з таким імям не існує',
-            backUrl: '/registration',
-            text: 'Зареєструватись'
+            error: 'There is no user with this name',
+            backUrl: '/users',
+            text: 'Register'
         });
         return;
     }
-    if (users.some((user => user.username === username && user.password !== password))) {
+    if (isUserPasswordRight) {
         res.render('error', {
-            error: 'Введено не коректні дані',
+            error: 'Invalid data entered',
             backUrl: '/login',
-            text: 'Назад'
+            text: 'Back'
         });
         return;
     }
