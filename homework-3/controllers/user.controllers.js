@@ -1,28 +1,27 @@
-const { findAllUsers, findUserById, insertUser, deleteUserById, changeUserName } = require('../services/user.services')
+const { userServices } = require('../services');
 
 module.exports = {
     getAllUsers: async (req, res) => {
-        const users = await findAllUsers();
+        const users = await userServices.findAllUsers();
         res.json(users);
     },
 
     getUserById: async (req, res) => {
-        const user = await findUserById(+req.params.id);
-        res.json(user);
+        res.json(req.user);
     },
 
     createUser: async (req, res) => {
-        await insertUser(req.body.userName);
+        await userServices.insertUser(req.body.userName);
         res.json('success');
     },
 
     deleteUser: async (req, res) => {
-        await deleteUserById(+req.params.id)
+        await userServices.deleteUserById(+req.params.id);
         res.json('success');
     },
 
     updateUser: async (req, res) => {
-        await changeUserName(+req.params.id, req.body.userName);
+        await userServices.changeUserName(+req.params.id, req.body.userName);
         res.json('success');
     }
-}
+};

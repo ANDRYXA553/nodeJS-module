@@ -2,8 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
+const { constants } = require('../constants');
+
 const getUsers = util.promisify(fs.readFile);
-const usersPath = path.join('/home', 'bohdan', 'WebstormProjects', 'nodeJS-module', 'homework-3', 'dataBase', 'users.json');
+const usersPath = path.join(__dirname, constants.DB_URL);
 
 function getAllUsers(data) {
     return JSON.parse(data.toString());
@@ -11,13 +13,9 @@ function getAllUsers(data) {
 
 module.exports = {
     findAllUsers: async () => {
-        let users;
+        const users = await getUsers(usersPath);
 
-        await getUsers(usersPath).then(data => {
-            users = getAllUsers(data);
-        });
-
-        return users;
+        return JSON.parse(users.toString());
     },
 
     findUserById: async (userId) => {
@@ -54,8 +52,10 @@ module.exports = {
         let user;
 
         await getUsers(usersPath).then(data => {
-            user = getAllUsers(data).find(user => user.id === userId);
+            const users = getAllUsers(data);
+            user = users.find(user => user.id === userId);
             user.userName = newName;
+            fs.writeFile(usersPath, JSON.stringify(users), err => console.log(err));
         });
 
         return user;

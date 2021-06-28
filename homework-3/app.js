@@ -1,6 +1,7 @@
 const express = require('express');
 
-const userRouter = require('./routes/user.routes')
+const { constants } = require('./constants');
+const { userRouter } = require('./routes');
 
 const app = express();
 
@@ -9,6 +10,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/users', userRouter);
 
-app.listen(5000, () => {
-    console.log('App has been started on port 5000...')
+app.listen(constants.PORT, () => {
+    console.log(`App has been started on port ${constants.PORT}...`)
 });
